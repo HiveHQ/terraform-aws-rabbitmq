@@ -5,9 +5,46 @@ write_files:
         [rabbitmq_management].
   - path: /root/conf/rabbitmq.config
     content: |
-        [ { rabbit, [
-          { loopback_users, [ ] } ] }
-         ].
+        %% -*- mode: erlang -*-
+        %% ----------------------------------------------------------------------------
+        %% RabbitMQ Configuration File.
+        %%
+        %% See http://www.rabbitmq.com/configure.html for details.
+        %% ----------------------------------------------------------------------------
+        [
+           {
+              rabbitmq_management,
+              [
+                 {rates_mode, none}
+              ]
+           },
+           {
+              rabbitmq_management_agent,
+              [
+                 {rates_mode, none}
+              ]
+           },
+           {
+              rabbit,
+              [
+                 %%
+                 %% Resource Limits & Flow Control
+                 %% ==============================
+                 %%
+                 %% See http://www.rabbitmq.com/memory.html for full details.
+                 %% Memory-based Flow Control threshold.
+                 %%
+                 {vm_memory_high_watermark, 0.85},
+                 %% Fraction of the high watermark limit at which queues start to
+                 %% page message out to disc in order to free up memory.
+                 %%
+                 {vm_memory_high_watermark_paging_ratio, 0.65},
+                 %% turns on a high performance version of erlang??
+                 {hipe_compile, true},
+                 { loopback_users, [ ] } ] }
+              ]
+           }
+        ].
   - path: /root/find_hosts.sh
     content: |
         #!/usr/bin/env bash
@@ -61,6 +98,7 @@ write_files:
         docker exec rabbitmq rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
         docker exec rabbitmq rabbitmqctl set_permissions -p / rabbit ".*" ".*" ".*"
         docker exec rabbitmq rabbitmqctl delete_user guest
+        docker exec rabbitmq rabbitmqctl set_policy -p / lazy ".*" '{"queue-mode": "lazy"}'
 
 runcmd:
   - yum update -y
