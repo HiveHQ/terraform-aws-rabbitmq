@@ -90,7 +90,7 @@ resource "aws_iam_instance_profile" "profile" {
 }
 
 resource "aws_launch_configuration" "rabbitmq" {
-  name                 = local.cluster_name
+  name_prefix          = local.cluster_name
   image_id             = data.aws_ami_ids.ami.ids[0]
   instance_type        = var.instance_type
   key_name             = var.ssh_key_name
@@ -118,6 +118,10 @@ resource "aws_autoscaling_group" "rabbitmq" {
   force_delete              = true
   launch_configuration      = aws_launch_configuration.rabbitmq.name
   vpc_zone_identifier       = var.subnet_ids
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tag {
     key                 = "Name"
