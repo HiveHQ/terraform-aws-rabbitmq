@@ -9,6 +9,9 @@ variable "ssh_key_name" {
 variable "name" {
 }
 
+variable "admin_password" {
+}
+
 variable "min_size" {
   description = "Minimum number of RabbitMQ nodes"
   default     = 0

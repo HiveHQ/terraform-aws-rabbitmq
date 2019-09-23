@@ -17,11 +17,6 @@ locals {
   cluster_name = "rabbitmq-${var.name}"
 }
 
-resource "random_string" "admin_password" {
-  length  = 32
-  special = false
-}
-
 resource "random_string" "rabbit_password" {
   length  = 32
   special = false
@@ -49,7 +44,7 @@ data "template_file" "cloud-init" {
   vars = {
     asg_name        = local.cluster_name
     region          = data.aws_region.current.name
-    admin_password  = random_string.admin_password.result
+    admin_password  = var.admin_password
     rabbit_password = random_string.rabbit_password.result
     secret_cookie   = random_string.secret_cookie.result
   }
