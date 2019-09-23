@@ -35,12 +35,13 @@ write_files:
                  %% Memory-based Flow Control threshold.
                  %%
                  {vm_memory_high_watermark, 0.85},
+
                  %% Fraction of the high watermark limit at which queues start to
                  %% page message out to disc in order to free up memory.
                  %%
                  {vm_memory_high_watermark_paging_ratio, 0.65},
+
                  %% turns on a high performance version of erlang??
-                 {hipe_compile, true},
                  { loopback_users, [ ] }
               ]
            }
